@@ -10,10 +10,10 @@ function App() {
         <div className="container">
             <h1 className="main-header my-5">Curriculum Vitae</h1>
             <div className="content-bulk">
-                { /* <ContactInformation/>*/ }
+                <ContactInformation/>
             </div>
             <div className="content-bulk">
-                { /*<Education/> */ }
+                <Education/>
             </div>
             <div className="content-bulk">
                 <Work/>
