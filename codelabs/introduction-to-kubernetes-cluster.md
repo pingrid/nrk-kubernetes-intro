@@ -1,9 +1,9 @@
 author: Line Moseng and Ingrid Guren
-id: pingrid-introduction-to-kubernetes-cluster
+id: pingrid-nrk-introduction-to-kubernetes-cluster
 
-<a name="kubernetesongooglecloudplatform"></a>
+<a name="kubernetesonazure"></a>
 
-#Kubernetes on Azure Kubernetes Service
+#Kubernetes on Azure
 
 <a name="signup"></a>
 
@@ -11,118 +11,90 @@ id: pingrid-introduction-to-kubernetes-cluster
 Create an account on Microsoft Azure
   1. Go to: https://azure.microsoft.com/en-us/free 
   2. Select Free plan
-  3. Sign up. You will have to create a Microsoft account on an email you haven't used before. The first 12 months are free of charge if you don't start too many services. 
+  3. Sign up. You will have to create a Microsoft account on an email you haven't used before. The first 12 months are free of charge if you don't use more than 1,650 credits. 
+  Microsoft promise: *You won’t be charged unless you upgrade.*
+
+<!---
+
+<a name="installkubernetescli"></a>
+
+###Install Kubernetes CLI
+
+Install kubectl (Kubernetes CLI) from [here](https://kubernetes.io/docs/tasks/tools/install-kubectl/).
+ --> 
+    
+<a name="createaclusterintheportal"></a>
+
+###Create a cluster in the portal
+We need a cluster where we want to run our application.
+
+You can create the cluster both in the Portal view in your browser  or by using Azure command line tool.
+We will use the Portal.
+
+  1. Visit [Azure Portal](https://portal.azure.com/) in your browser.
+     Search for  *Kubernetes Service* in the top search bar
+  2. Click + Add
+  3. Select *Free trial* as your subscription and add *nrk-introduction-kubernetes-rg* as a new Resource group.
+  4. Give the cluster the name `cv-cluster`.
+  5. Select Kubernetes version *1.17.3* (not very important, but that is the version we use at NRK). 
+  
+  6. It is possible to change machine types, networking and resources for each node in your cluster.  We won't need much resources for our application: 
+  7. Change node size to *Standard B2s* and node count to *2*. 
+  8. Click *Review + create*. If the validation fails you will have to do adjustments. 
+  9. Click *CREATE*
+Creating the cluster might take some time This may take some time, if you want you can read [this comic](https://cloud.google.com/kubernetes-engine/kubernetes-comic/) while you wait :) 
+
 
 <a name="installation"></a>
 
-###Installation
-In order to explore the Kubernetes cluster on Google Kubernetes Engine you need to install the Google Cloud SDK command line tool.
-
-
-<a name="downloadthegooglecloudsdk"></a>
-
-###Download the Google Cloud SDK
-  
-  **Linux/Mac:** 
-  
-  1. Enter the following at a command prompt: `curl https://sdk.cloud.google.com | bash`
-  2. Restart your shell: `exec -l $SHELL`
-  3. Run gcloud init to initialize the gcloud environment: `gcloud init` 
-  
-  **Windows:**
-  
-  1. Download the [Cloud SDK installer](https://dl.google.com/dl/cloudsdk/channels/rapid/GoogleCloudSDKInstaller.exe).
-  2. Launch the installer and follow the prompts.
-  Cloud SDK requires Python 2 with a release version of Python 2.7.9 or later.
-  3. After installation has completed, accept the following options:
-        - Start Cloud SDK Shell
-        - Run `gcloud init`
-  The installer starts a terminal window and runs the `gcloud init` command.
-  The default installation does not include the App Engine extensions required to deploy an application using gcloud commands.
-    
-    
-<a name="initializegcloud"></a>
-
-###Initialize gcloud
-
-Authenticate in the browser when you are asked to with the `gcloud init` command. 
-Pick an existing project as your default for now (*option 1*). Example on the output in your terminal:
-    
-    Pick cloud project to use:
-     [1] arched-media-225216
-     [2] Create a new project
-    Please enter numeric choice or text value (must exactly match list
-    item):  1
-
-<a name="createacluster"></a>
-
-##Create a cluster
-We need a cluster where we want to run our application.
-
-You can create the cluster both in the Console view in your browser and by the gcloud command line tool.
-We will use the Console to do it and also look at the equivalent gcloud command provided by the Google Console. 
-
-  1. Visit [Google Cloud Console](https://console.cloud.google.com/) in your browser.
-     Click on *Kubernetes Engine* in the left side menu. If you are asked to enable the engine, do so. Read [this](https://cloud.google.com/kubernetes-engine/kubernetes-comic/) cartoon while you wait for it to get ready.
-  2. Click on the button *CREATE CLUSTER*
-  3. Choose *Standard cluster*
-  3. Give the cluster the name `cv-cluster`.
-  4. Choose the zone `europe-north1-a` (which is in Finland).
-  5. Choose Master Version: Set it to the newest available version.
-  6. Next you see that you can select what machine type to use. This defines the resources each node in your cluster will have. You don't need to change this.
-  7. On the right side of the create button, there are two links to get the command line and REST request. Click on these to see how you can create the same cluster without the GUI.
-  8. Click Create. This will probably take several minutes. In the meantime you can move on to the next section. Notice that you can view the setup progress for your cluster in the top right corner.
-
-
-<a name="installation-1"></a>
-
 ##Installation
 
-<a name="installthekubernetescommand-linetool"></a>
 
-###Install the Kubernetes command-line tool
+<a name="installtheazurecli"></a>
+
+###Install the Azure CLI
+In order to explore the Kubernetes cluster on Azure Kubernetes Service you need to install the Azure command line tool.
+
+Install the Azure CLI from [here](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest). 
+
+
 1. To operate our cluster, we will use the Kubernetes command line tool, *kubectl*:
   ```
-   gcloud components install kubectl
+   az aks install-cli
   ```
 
-The cloud SDK installs the tool for you. This tool is not Google Cloud specific, but is used to operate Kubernetes clusters regardless of where they are hosted.
+The cloud SDK installs the tool for you. Kubectl is used by both Google Cloud Platform and Microsoft Azure and is used to operate Kubernetes clusters regardless of where they are hosted.
 
-2. You can see if your cluster is created by this command:
+To be able to view your components, you need to login
+
+```
+az login
+``` 
+
+Then we want to view our cluster. 
+
+```
+az aks get-credentials --resource-group [INSERT RESOURCE GROUP FROM SETUP] --name [INSERT CLUSTER NAME FROM SETUP]
+```
+
+What this does is to write credentials to the file `~/.kube/config`. You can take a look at that file too see what is written to it.
+
+2. You can see the status of your cluster nodes here
    
    ```
-   gcloud container clusters list
+   kubectl get nodes
    ```
 
-    If the status of your cluster is `RUNNING`, move on to the step 2. If there is no output, you might have the wrong project set in your config file. Do this to set the correct project:
+    If the status of your nodes are `Ready`, you are ready for next step! Otherwise try setting some default config for your project. 
   
-    - Go back to your browser and click on the dropdown next to `Google Cloud Platform`. This should open a modal where at least one project is listed.
-    - Copy the ID of the active project
-    - Type this in your terminal:
-  
-        ```
-        gcloud config set project INSERT_PROJECT_ID
-        ```
     
-    - Run:
-    
-        ```
-        gcloud container clusters list
-        ```
-    
-3. We want to set the default zone of our application, this tells google cloud where to look for the cluster.
+3. We want to set the default resource group for our cluster so that we don't have to add `--resource-group` in our commands every time.
 We created our cluster in *europe-north1-a* and will set our default zone to this. 
 
     ```
-    gcloud config set compute/zone europe-north1-a
+   `az configure --defaults group=[RESOURCE GROUP NAME]`
     ``` 
 
-4. The next step is to make sure that the Kubernetes command line tool is authenticated against our new cluster. This is easily done by this neat gcloud command:
-    ```
-   gcloud container clusters get-credentials cv-cluster
-   ```
-
-What this does is to write credentials to the file `~/.kube/config`. You can take a look at that file too see what is written to it.
 
 **Extra task:** If you want bash autocompletion for kubectl, follow [these steps](https://kubernetes.io/docs/tasks/tools/install-kubectl/#enabling-shell-autocompletion).
 
@@ -145,11 +117,12 @@ Now that we are authenticated, we can look at the components in our cluster by u
    
    A node is a worker machine in Kubernetes. A node may be a VM or physical machine, depending on the cluster.
 
+
 <a name="forkthisrepository"></a>
 
 ##Fork this repository
 
-1. Visit [this](https://github.com/linemos/kubernetes-intro) repository and fork it to your own Github account
+1. Visit [this](https://github.com/pingrid/nrk-kubernetes-intro) repository and fork it to your own Github account. 
 
 2. Clone it to your laptop.
 
@@ -167,88 +140,80 @@ Docker is the most commonly used container service in Kubernetes.
 In this repository you will find code for both applications in the backend and frontend directories.
 Each of these folders also have their own Dockerfile.
 Take a look at the docker files too see how they are built up:
-  - [frontend/Dockerfile](https://github.com/linemos/kubernetes-intro/blob/master/frontend/Dockerfile)
-  - [backend/Dockerfile](https://github.com/linemos/kubernetes-intro/blob/master/backend/Dockerfile)
+  - [frontend/Dockerfile](/frontend/Dockerfile)
+  - [backend/Dockerfile](/backend/Dockerfile)
   
 Notice the `.dockerignore` files inside both the [frontend directory](https://github.com/linemos/kubernetes-intro/tree/master/frontend) and the [backend directory](https://github.com/linemos/kubernetes-intro/tree/master/backend) as well.
 This file tells the Docker daemon which files and directories to ignore, for example the `node_modules` directory.
 
 One way to create Docker images is to manually create ands build images on your own computer with the Docker daemon. Instead, we are going to automatically build images by using build triggers in Google Cloud Platform.
 
-<a name="buildtriggers"></a>
 
-###Build triggers
-1. Go to cloud console: find **Cloud Build** in the left side menu (under tools). 
-If you are asked to enable the Container Build API, do so.
-_Tips: If you have problems finding the Google Cloud functionality you are looking for, try searching for it instead_ 😊
-2. Choose _Triggers_ in the left-side menu. 
-3. Click *Create trigger*
-4. Choose Github as build source. Click *Continue*
-You will have to authenticate Github with Google Cloud Platform. This lets Google Cloud Platform listen to changes in your code so that it can start building new Docker images when you have pushed new code. 
-5. Select the fork as the repository and click *Continue*
-6. Now its time to add the specifications for the build trigger:
-    - *Name*: Backend trigger
-    - *Trigger type*: `Tag`.
-    - Set tag to `cv-backend-.*`
-    - Leave *Included files filter (glob)* and *Ignored files filter (glob)* empty
-    - *Build Configuration*: Dockerfile
-    - *Dockerfile directory*: Point to the backend Dockerfile in `backend/`
-    - *Dockerfile name*: `Dockerfile`
-    - *Image name*: `gcr.io/$PROJECT_ID/backend:$TAG_NAME`
-   
-7. Click *Create trigger*
+<a name="containerregistry"></a>
 
-Now, do the same thing for the frontend application.
-Name it `Frontend trigger`, set tag to `cv-frontend-.*`, set the directory to be `/frontend/` and
-set the Docker image to be `gcr.io/$PROJECT_ID/frontend:$TAG_NAME`.
+###Container registry
+Container registry is where we are going to push our docker images. 
+Go to [Azure Container registry](https://portal.azure.com/#create/Microsoft.ContainerRegistry)(or search for Container Registry in Azure Portal).
 
-This sets up a build trigger that listens to new commits on the master branch of your repository.
-If the commit is tagged with `cv-frontend-1`, it will use the Dockerfile in the frontend directory to create a new Docker image.
+1. Select *Free Trial* as subscription
+2. Select same resource group as you created in installation&setup
+3. Select your registry name (and remember it for the next tasks )
 
-7. Click on the small menu on the trigger and select *Run trigger* to test it
-8. Once it is finished building, you can find the image under the *Builder Images* in the menu point.
 
-<a name="testthebuildtrigger"></a>
+<a name="azurepipelines"></a>
 
-###Test the build trigger
-You tried to run the build trigger manually in the previous step.
-Now you will test how it works on new commits on your GitHub repository.
+###Azure pipelines
+We want to automatically build our code ready for deploy with Azure pipelines. 
+1. Go to [Azure pipelines in Microsoft Azure]https://azure.microsoft.com/en-gb/services/devops/pipelines/
+2. Add Azure pipelines to your project (same account you logged in with), and set privacy to *public*.
+3. Select `Github`
+4. Give access to Azure pipelines
+5. Select your forked repository
+6. Select Basic for SKU
+7. Click *Create*
+
+**Configure your pipeline for the fronted-application **
+1. Select *Docker: build an push an image to Azure Container Registry*
+2. Select your correct subscription
+3. Give it a recognizable name, ex. *cvfrontend* (remember we are going to create two 😊)
+4. Review your file 
+5. Click save 
+
+If you selected your project to be private and have problems configuring your pipeline built, change it to public for now. This is just for less configuration 😊
+
+**Configure your pipeline for the fronted-application**
+Now, do the same thing for the backend applicatipon. 
+Remember to change the path for your Docker file  ($(Build.SourcesDirectory)/backend/Dockerfile), and give it a new name ex. *cvbackend* 
+
+<a name="validateandtestyourazurepipelines(buildtriggers)"></a>
+
+###Validate and test your Azure pipelines (build triggers)
+Click on pipelines and have a look at your builds. Verify that they go green. 
+When we created the Azure pipelines, we added a yaml file for each of our projects to Github with a commit. Notice that when we added the second pipeline the first pipeline started building again. The reason for this is in the file _azure-pipelines.yml_ (pull new changes to look at the file):
+
+```
+trigger:
+- master
+```
+
+To specify builds based only on some branches, simple change or add branches. 
+
 
 <a name="changethecode"></a>
 
 ##Change the code
-Open the file [backend/server.js](https://github.com/linemos/kubernetes-intro/blob/master/backend/server.js) and edit the JSON responses to your name, workplace and education.
+We want to change to code to see if it triggers a new build. 
+
+Open the file [backend/data.js](https://github.com/pingrid/nrk-kubernetes-intro/blob/master/backend/data.js) and edit the JSON responses to your name, workplace and education.
+
+If you want, you can also change the background color in [frontend/index.css](https://github.com/pingrid/nrk-kubernetes-intro/blob/master/frontend/src/index.css). 
+
 You can either change the code in an editor or in GitHub directly. Commit and push your commit.
-
-<a name="publishyourchanges"></a>
-
-###Publish your changes
-We need to add a tag to notify our build triggers that the code has changed and need to rebuild. 
-There are two ways to ad a tag:
-
-**In the terminal**
-
-If you commit from the git command line, the command to tag the latest commit is:
-
-  ```
-  git tag -a cv-backend-2
-  git push --tags
-  ```
-*NB: Remember to change the latest number in your tag. If cv-backend-2 already is a tag, you should use cv-backend-3* 
-
-**In GitHub**
-
-You can add a tag to your directly from GitHub: 
-1. In the repo, Click on *releases*, next to contributors.
-2. Click on *Draft a new release*
-3. Write your new tag (ex: *cv-backend-2*)
-4. Create release title if you want (ex: *What have you done?*)
-5. Click *Publish release*
 
 **Then**
 
-Go back to the Build triggers in Cloud Console and click on *Build history* to see whether the backend starts building.
-Notice that you can follow the build log if you want to see whats going on during the building of the image.
+Go back to the [Azure pipelines](https://dev.azure.com/) and click on your Recent pipelines to see whether the build starts building. Notice that you can follow the build log if you want to see whats going on during the building of the image.
+
 
 <a name="deploytoyourkubernetescluster"></a>
 
@@ -258,13 +223,15 @@ It's time to deploy the frontend and backend to your cluster!
 
 The preferred way to configure Kubernetes resources is to specify them in YAML files.
 
-In the folder [yaml/](https://github.com/linemos/kubernetes-intro/tree/master/yaml) you find the YAML files specifying what resources Kubernetes should create.
+In the folder [yaml/](https://github.com/pingrid/nrk-kubernetes-intro/blob/master/yaml) you find the YAML files specifying what resources Kubernetes should create.
 There are two files for specifying services and two files for specifying deployments. One for the backend application (*backend-service.yaml*) and one for the frontend application (*frontend-service.yaml*).
 Same for the deployments.
 
-1. Open the file [yaml/backend-deployment.yaml](https://github.com/linemos/kubernetes-intro/blob/master/yaml/backend-deployment.yaml)
+1. Open the file [yaml/backend-deployment.yaml](https://github.com/pingrid/nrk-kubernetes-intro/blob/master/yaml/backend-deployment.yaml)
 2. In the field `spec.template.spec.containers.image` insert the full name of your backend Docker image created in the previous step. 
-The name should be on the form `gcr.io/MY_PROJECT_ID/backend:TAG_NAME`, example: `gcr.io/my-kubernetes-project-1234/backend:cv-backend-1`.
+
+The name should be on the form `[CONTAINER REGISTRY ID]/azurecr.io/[IMAGE NAME]:VERSION`. 
+You can find the correct path of your image by going to [Azure Portal](https://portal.azure.com/) and searching for Container registry. Select your registry, then select *Repositories*. Latest version can be found under repository under Container registry. 
  
     There are a few things to notice in the deployment file:
     - The number of replicas is set to 3. This is the number of pods we want running at all times
@@ -275,7 +242,32 @@ The name should be on the form `gcr.io/MY_PROJECT_ID/backend:TAG_NAME`, example:
       - `spec.template.metadata` is the label added to the Pods
   
 3. Open the file [yaml/frontend-deployment.yaml](https://github.com/linemos/kubernetes-intro/blob/master/yaml/frontend-deployment.yaml). 
-4. Insert your Frontend Docker image name in the field `spec.template.spec.containers.image`.  The name should should be on the form `gcr.io/MY_PROJECT_ID/frontend:TAG_NAME`.
+4. Insert your Frontend Docker image name in the field `spec.template.spec.containers.image`.  
+
+5. Now we need to give Kubernetes access to our container registry. 
+
+
+```
+kubectl create secret docker-registry <secret-name> \
+  --namespace <namespace> \
+  --docker-server=https://<container-registry-name>.azurecr.io \
+  --docker-username=<service-principal-ID> \
+  --docker-password=<service-principal-password>
+  ```
+  
+Let secret-name be `acr-docker-secret` and use the principal service-principal-id and service-principal-password be the ones you got by running the scripts above.
+
+Verify that you now have a secret: 
+```
+kubectl get secret. 
+``` 
+
+A secret is only available for resources within the cluster and is a great way to store passwords and tokens. 
+
+
+
+
+*It did not work?*  Alternative ways for accessing your build images [here](https://docs.microsoft.com/en-us/azure/container-registry/container-registry-auth-kubernetes).
 
 5. Create the resources for the backend and frontend (from root folder in the project):
   
@@ -349,7 +341,7 @@ tell the old ReplicaSet to scale number of pods down to zero.
 ##Create services
 Now that our applications are running, we would like to route traffic to them.
 
-* Open [yaml/backend-service.yaml](https://github.com/linemos/kubernetes-intro/blob/master/yaml/backend-service.yaml)
+* Open [yaml/backend-service.yaml](https://github.com/pingrid/nrk-kubernetes-intro/blob/master/yaml/backend-service.yaml)
   There are a few things to notice:
     - The protocol is set to TCP, which means that the Service sends requests to Pods on this protocol. UDP is also supported
     - The spec has defined port 80, so it will listen to traffic on port 80 and sends traffic to the Pods on the same port. We could also define `targetPort` if the port on the Pods are different from the incoming traffic port
@@ -411,7 +403,7 @@ Let's look at another way. The Service resource can have a different type, it ca
     By doing this, the Deployment will create a new ReplicaSet which will again create new Pods.
     At this time the backend Service exists and is given to the frontend application.
 
- 
+
 
 <a name="rollingupdates"></a>
 
@@ -420,19 +412,13 @@ As you read earlier, Kubernetes can update your application without down time wi
 You will now update the background color of the frontend application, see that the build trigger creates a new image and
 update the deployment to use this in your web application.
 
-1. Open the file [frontend/src/index.css](https://github.com/linemos/kubernetes-intro/blob/master/frontend/src/index.css) and edit the field `background-color` to your favourite color
+1. Open the file [frontend/src/index.css](https://github.com/pingrid/nrk-kubernetes-intro/blob/master/frontend/src/index.css) and edit the field `background-color` to your favourite color (or the color you hate the most?)
 2. Commit your changes
-3. Create a *cv-frontend-2* tag like we did earlier (or a later tag version if this tag is already used). 
-4. Go back to the cloud console in your browser and make sure that the build trigger finishes successfully
-5. Update the image specification on the file [yaml/frontend-deployment.yaml](https://github.com/linemos/kubernetes-intro/blob/master/yaml/frontend-deployment.yaml) by adding the tag `:2`
+3. Push your changes and verify that a new verion is built on Azure pipelines as earlier. 
+4. Update the image specification on the file [yaml/frontend-deployment.yaml](https://github.com/pingrid/nrk-kubernetes-intro/blob/master/yaml/frontend-deployment.yaml) by changing the tag to the correct version number
 6. Open a new terminal window to watch the deletion and creation of Pods:
       ```
       watch kubectl get pods
-      ```
-      If you don't have `watch` installed, you can use this command instead:
-    
-      ```
-      kubectl get pods -w
       ```
       Don't close this window.
 
@@ -553,7 +539,7 @@ Another option would be to use an ingress.
 
 An ingress is a resource that will allow traffic from outside the cluster to your services. We will now create such a resource to get an external IP and to allow requests to our frontend service.
 
-* Open the file [yaml/ingress.yaml](https://github.com/linemos/kubernetes-intro/blob/master/yaml/ingress.yaml)
+* Open the file [yaml/ingress.yaml](https://github.com/pingrid/nrk-kubernetes-intro/blob/master/yaml/ingress.yaml)
   Notice that we have defined that we have configured our ingress to send requests to our `frontend` service on port `8001`.
 * Create the ingress resource:
   
@@ -693,31 +679,25 @@ E.g. if your container has `curl` installed, we could define that the probe is t
 
 ##Clean up
 
-The cluster you have created will charge your credit card after some time if you keep it running. You can use the [Google Cloud Price Calculator](https://cloud.google.com/products/calculator/) to find out how much it will cost you. If you keep it running, it will cost you money then the price is more than $300 (which is the included credits in the Free Tier).
+You can always look at the pricing for resources [here](https://azure.microsoft.com/nb-no/pricing/calculator/) and your remaining credits by searching for *Free trial* in the portal.
+
+**Delete your cluster** 
+
+Be careful and only delete the cluster we have made during the workshop 😉 
+
+```
+az aks delete --name [CLUSTER NAME] --resource-group [RESOURCE GROUP NAME]
+```
 
 **Close your billing account**
 
-1. Go to [Google Cloud Console](https://console.cloud.google.com)
-2. Select **Billing** in the main menu
-3. Select **My billing accounts**
-4. Click on the menu on your billing account and click *close*
+Follow the steps [here](https://docs.microsoft.com/en-us/azure/cost-management-billing/manage/cancel-azure-subscription) to close your Azure Subscription. 
 
-**Delete your project** 
-
-```
-gcloud config get-value project
-gcloud projects delete $(!!)
-```
 
 And your are done and your credit card will not be charged.
 
 And that's it! ⎈
 
-<a name="feedback?😇"></a>
-
-###Feedback? 😇
-
-We would love to get feedback to improve our workshop. You are awesome if you have time to fill out [this form](https://goo.gl/forms/7PnIF6r3mqQGG4M82). It is of course anonymous.
 
 <a name="anyquestions?"></a>
 

@@ -1,0 +1,489 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>Kubernetes on Azure</title>
+  <script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+  <link rel="import" href="../elements/codelab.html">
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <style is="custom-style">
+    body {
+      font-family: "Roboto",sans-serif;
+      background: var(--google-codelab-background, #F8F9FA);
+    }
+  </style>
+  
+</head>
+<body unresolved class="fullbleed">
+
+  <google-codelab title="Kubernetes on Azure"
+                  environment="web"
+                  feedback-link="">
+    
+      <google-codelab-step label="Sign up" duration="0">
+        <p>Create an account on Microsoft Azure</p>
+<ol type="1">
+<li>Go to: https://azure.microsoft.com/en-us/free</li>
+<li>Select Free plan</li>
+<li>Sign up. You will have to create a Microsoft account on an email you haven&#39;t used before. The first 12 months are free of charge if you don&#39;t use more than 1,650 credits.<br>Microsoft promise: <em>You won&#39;t be charged unless you upgrade.</em></li>
+</ol>
+<h2>Create a cluster in the portal</h2>
+<p>We need a cluster where we want to run our application.</p>
+<p>You can create the cluster both in the Portal view in your browser  or by using Azure command line tool.<br>We will use the Portal.</p>
+<ol type="1">
+<li>Visit <a href="https://portal.azure.com/" target="_blank">Azure Portal</a> in your browser.<br> Search for  <em>Kubernetes Service</em> in the top search bar</li>
+<li>Click + Add</li>
+<li>Select <em>Free trial</em> as your subscription and add <em>nrk-introduction-kubernetes-rg</em> as a new Resource group.</li>
+<li>Give the cluster the name <code>cv-cluster</code>.</li>
+<li>Select Kubernetes version <em>1.17.3</em> (not very important, but that is the version we use at NRK).</li>
+<li>It is possible to change machine types, networking and resources for each node in your cluster.  We won&#39;t need much resources for our application:</li>
+<li>Change node size to <em>Standard B2s</em> and node count to <em>2</em>.</li>
+<li>Click <em>Review + create</em>. If the validation fails you will have to do adjustments.</li>
+<li>Click <em>CREATE</em><br>Creating the cluster might take some time This may take some time, if you want you can read <a href="https://cloud.google.com/kubernetes-engine/kubernetes-comic/" target="_blank">this comic</a> while you wait :)</li>
+</ol>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Installation" duration="0">
+        <h2>Install the Azure CLI</h2>
+<p>In order to explore the Kubernetes cluster on Azure Kubernetes Service you need to install the Azure command line tool.</p>
+<p>Install the Azure CLI from <a href="https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest" target="_blank">here</a>.</p>
+<ol type="1">
+<li>To operate our cluster, we will use the Kubernetes command line tool, <em>kubectl</em>:<pre><code>az aks install-cli
+</code></pre>
+</li>
+</ol>
+<p>The cloud SDK installs the tool for you. Kubectl is used by both Google Cloud Platform and Microsoft Azure and is used to operate Kubernetes clusters regardless of where they are hosted.</p>
+<p>To be able to view your components, you need to login</p>
+<pre><code>az login
+</code></pre>
+<p>Then we want to view our cluster.</p>
+<pre><code>az aks get-credentials --resource-group [INSERT RESOURCE GROUP FROM SETUP] --name [INSERT CLUSTER NAME FROM SETUP]
+</code></pre>
+<p>What this does is to write credentials to the file <code>~/.kube/config</code>. You can take a look at that file too see what is written to it.</p>
+<ol type="1">
+<li>You can see the status of your cluster nodes here<pre><code>kubectl get nodes
+</code></pre>
+If the status of your nodes are <code>Ready</code>, you are ready for next step! Otherwise try setting some default config for your project.</li>
+<li>We want to set the default resource group for our cluster so that we don&#39;t have to add <code>--resource-group</code> in our commands every time.<br>We created our cluster in <em>europe-north1-a</em> and will set our default zone to this.<pre><code>`az configure --defaults group=[RESOURCE GROUP NAME]`
+</code></pre>
+</li>
+</ol>
+<p><strong>Extra task:</strong> If you want bash autocompletion for kubectl, follow <a href="https://kubernetes.io/docs/tasks/tools/install-kubectl/#enabling-shell-autocompletion" target="_blank">these steps</a>.</p>
+<h2>Describe components of the cluster</h2>
+<p>Now that we are authenticated, we can look at the components in our cluster by using the kubectl command.</p>
+<ol type="1">
+<li>Remember how Kubernetes consists of nodes? List them by this command:<pre><code>kubectl get nodes
+</code></pre>
+</li>
+<li>If you want you can get more details about them by describing one of them:<pre><code>kubectl describe nodes &lt;INSERT_NODE_NAME&gt;
+</code></pre>
+</li>
+</ol>
+<p>A node is a worker machine in Kubernetes. A node may be a VM or physical machine, depending on the cluster.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Fork this repository" duration="0">
+        <ol type="1">
+<li>Visit <a href="https://github.com/pingrid/nrk-kubernetes-intro" target="_blank">this</a> repository and fork it to your own Github account.</li>
+<li>Clone it to your laptop.</li>
+</ol>
+<p>You need your own fork of the repository to create build triggers that will listen to changes in your code.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Docker containers" duration="0">
+        <p>To create a deployment on Kubernetes, you need to specify at least one container for your application.<br>Kubernetes will on a deploy pull the image specified and create pods with this container.<br>Docker is the most commonly used container service in Kubernetes.</p>
+<p>In this repository you will find code for both applications in the backend and frontend directories.<br>Each of these folders also have their own Dockerfile.<br>Take a look at the docker files too see how they are built up:</p>
+<ul>
+<li><a href="/frontend/Dockerfile" target="_blank">frontend/Dockerfile</a></li>
+<li><a href="/backend/Dockerfile" target="_blank">backend/Dockerfile</a><br></li>
+</ul>
+<p>Notice the <code>.dockerignore</code> files inside both the <a href="https://github.com/linemos/kubernetes-intro/tree/master/frontend" target="_blank">frontend directory</a> and the <a href="https://github.com/linemos/kubernetes-intro/tree/master/backend" target="_blank">backend directory</a> as well.<br>This file tells the Docker daemon which files and directories to ignore, for example the <code>node_modules</code> directory.</p>
+<p>One way to create Docker images is to manually create ands build images on your own computer with the Docker daemon. Instead, we are going to automatically build images by using build triggers in Google Cloud Platform.</p>
+<h2>Container registry</h2>
+<p>Container registry is where we are going to push our docker images.<br>Go to <a href="https://portal.azure.com/#create/Microsoft.ContainerRegistry" target="_blank">Azure Container registry</a>(or search for Container Registry in Azure Portal).</p>
+<ol type="1">
+<li>Select <em>Free Trial</em> as subscription</li>
+<li>Select same resource group as you created in installation&amp;setup</li>
+<li>Select your registry name (and remember it for the next tasks )</li>
+</ol>
+<h2>Azure pipelines</h2>
+<p>We want to automatically build our code ready for deploy with Azure pipelines.</p>
+<ol type="1">
+<li>Go to [Azure pipelines in Microsoft Azure]https://azure.microsoft.com/en-gb/services/devops/pipelines/</li>
+<li>Add Azure pipelines to your project (same account you logged in with), and set privacy to <em>public</em>.</li>
+<li>Select <code>Github</code></li>
+<li>Give access to Azure pipelines</li>
+<li>Select your forked repository</li>
+<li>Select Basic for SKU</li>
+<li>Click <em>Create</em></li>
+</ol>
+<p>**Configure your pipeline for the fronted-application **</p>
+<ol type="1">
+<li>Select <em>Docker: build an push an image to Azure Container Registry</em></li>
+<li>Select your correct subscription</li>
+<li>Give it a recognizable name, ex. <em>cvfrontend</em> (remember we are going to create two 😊)</li>
+<li>Review your file</li>
+<li>Click save</li>
+</ol>
+<p>If you selected your project to be private and have problems configuring your pipeline built, change it to public for now. This is just for less configuration 😊</p>
+<p><strong>Configure your pipeline for the fronted-application</strong><br>Now, do the same thing for the backend applicatipon.<br>Remember to change the path for your Docker file  ($(Build.SourcesDirectory)/backend/Dockerfile), and give it a new name ex. <em>cvbackend</em></p>
+<h2>Validate and test your Azure pipelines (build triggers)</h2>
+<p>Click on pipelines and have a look at your builds. Verify that they go green.<br>When we created the Azure pipelines, we added a yaml file for each of our projects to Github with a commit. Notice that when we added the second pipeline the first pipeline started building again. The reason for this is in the file <em>azure-pipelines.yml</em> (pull new changes to look at the file):</p>
+<pre><code>trigger:
+- master
+</code></pre>
+<p>To specify builds based only on some branches, simple change or add branches.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Change the code" duration="0">
+        <p>We want to change to code to see if it triggers a new build.</p>
+<p>Open the file <a href="https://github.com/pingrid/nrk-kubernetes-intro/blob/master/backend/data.js" target="_blank">backend/data.js</a> and edit the JSON responses to your name, workplace and education.</p>
+<p>If you want, you can also change the background color in <a href="https://github.com/pingrid/nrk-kubernetes-intro/blob/master/frontend/src/index.css" target="_blank">frontend/index.css</a>.</p>
+<p>You can either change the code in an editor or in GitHub directly. Commit and push your commit.</p>
+<p><strong>Then</strong></p>
+<p>Go back to the <a href="https://dev.azure.com/" target="_blank">Azure pipelines</a> and click on your Recent pipelines to see whether the build starts building. Notice that you can follow the build log if you want to see whats going on during the building of the image.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Deploy to your Kubernetes Cluster" duration="0">
+        <p>It&#39;s time to deploy the frontend and backend to your cluster!</p>
+<p>The preferred way to configure Kubernetes resources is to specify them in YAML files.</p>
+<p>In the folder <a href="https://github.com/pingrid/nrk-kubernetes-intro/blob/master/yaml" target="_blank">yaml/</a> you find the YAML files specifying what resources Kubernetes should create.<br>There are two files for specifying services and two files for specifying deployments. One for the backend application (<em>backend-service.yaml</em>) and one for the frontend application (<em>frontend-service.yaml</em>).<br>Same for the deployments.</p>
+<ol type="1">
+<li>Open the file <a href="https://github.com/pingrid/nrk-kubernetes-intro/blob/master/yaml/backend-deployment.yaml" target="_blank">yaml/backend-deployment.yaml</a></li>
+<li>In the field <code>spec.template.spec.containers.image</code> insert the full name of your backend Docker image created in the previous step.</li>
+</ol>
+<p>The name should be on the form <code>[CONTAINER REGISTRY ID]/azurecr.io/[IMAGE NAME]:VERSION</code>.<br>You can find the correct path of your image by going to <a href="https://portal.azure.com/" target="_blank">Azure Portal</a> and searching for Container registry. Select your registry, then select <em>Repositories</em>. Latest version can be found under repository under Container registry.</p>
+<pre><code>There are a few things to notice in the deployment file:
+- The number of replicas is set to 3. This is the number of pods we want running at all times
+- The container spec has defined port 5000, so the Deployment will open this port on the containers
+- The label `app: backend` is defined three places:
+  - `metadata` is used by the service, which we will look at later
+  - `spec.selector.matchLabels` is how the Deployment knows which Pods to manage
+  - `spec.template.metadata` is the label added to the Pods
+</code></pre>
+<ol type="1">
+<li>Open the file <a href="https://github.com/linemos/kubernetes-intro/blob/master/yaml/frontend-deployment.yaml" target="_blank">yaml/frontend-deployment.yaml</a>.</li>
+<li>Insert your Frontend Docker image name in the field <code>spec.template.spec.containers.image</code>.</li>
+<li>Now we need to give Kubernetes access to our container registry.<pre><code>kubectl create secret docker-registry &lt;secret-name&gt; \
+--namespace &lt;namespace&gt; \
+--docker-server=https://&lt;container-registry-name&gt;.azurecr.io \
+--docker-username=&lt;service-principal-ID&gt; \
+--docker-password=&lt;service-principal-password&gt;
+</code></pre>
+</li>
+</ol>
+<p>Let secret-name be <code>acr-docker-secret</code> and use the principal service-principal-id and service-principal-password be the ones you got by running the scripts above.</p>
+<p>Verify that you now have a secret:</p>
+<pre><code>kubectl get secret. 
+</code></pre>
+<p>A secret is only available for resources within the cluster and is a great way to store passwords and tokens.</p>
+<p><em>It did not work?</em>  Alternative ways for accessing your build images <a href="https://docs.microsoft.com/en-us/azure/container-registry/container-registry-auth-kubernetes" target="_blank">here</a>.</p>
+<ol type="1">
+<li>Create the resources for the backend and frontend (from root folder in the project):<pre><code>kubectl apply -f ./yaml/backend-deployment.yaml
+kubectl apply -f ./yaml/frontend-deployment.yaml
+</code></pre>
+</li>
+<li>Watch the creation of pods:<pre><code>watch kubectl get pods
+</code></pre>
+</li>
+</ol>
+<p>If you don&#39;t have <code>watch</code> installed, you can use this command instead:</p>
+<pre><code>  kubectl get pods -w
+</code></pre>
+<p>When all pods are running, quit by <code>ctrl + q</code> (or <code>ctrl + c</code> when on Windows).</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="About pods" duration="0">
+        <p>Pods are Kubernetes resources that mostly just contains one or more containers,<br>along with some Kubernetes network stuff and specifications on how to run the container(s).<br>All of our pods contains only one container. There are several use cases where you might want to specify several<br>containers in one pod, for instance if you need a proxy in front of your application.</p>
+<p>The Pods were created when you applied the specification of the type <code>Deployment</code>, which is a controller resource.<br>The Deployment specification contains a desired state and the Deployment controller changes the state to achieve this.<br>When creating the Deployment, it will create ReplicaSet, which it owns.</p>
+<p>The ReplicaSet will then create the desired number of pods, and recreate them if the Deployment specification changes,<br>e.g. if you want another number of pods running or if you update the Docker image to use.<br>It will do so in a rolling-update manner, which we will explore soon.</p>
+<p>The Pods are running on the cluster nodes.</p>
+<p><img alt="Illustration of deployments, replicasets, pods and nodes." src="img/53c482438ae86583.png"></p>
+<p><em>Did you noticed that the pod names were prefixed with the deployment names and two hashes?</em> - The first hash is the hash of the ReplicaSet, the second is unique for the Pod.</p>
+<ol type="1">
+<li>Explore the Deployments:<pre><code>kubectl get deployments
+</code></pre>
+</li>
+</ol>
+<p>Here you can see the age of the Deployment and how many Pods that are desired in the configuration specification,<br>the number of running pods, the number of pods that are updated and how many that are available.</p>
+<ol type="1">
+<li>Explore the ReplicaSets:<pre><code>kubectl get replicaset
+</code></pre>
+</li>
+</ol>
+<p>The statuses are similar to those of the Deployments, except that the ReplicaSet have no concept of updates.<br>If you run an update to a Deployment, it will create a new ReplicaSet with the updated specification and<br>tell the old ReplicaSet to scale number of pods down to zero.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Create services" duration="0">
+        <p>Now that our applications are running, we would like to route traffic to them.</p>
+<ul>
+<li>Open <a href="https://github.com/pingrid/nrk-kubernetes-intro/blob/master/yaml/backend-service.yaml" target="_blank">yaml/backend-service.yaml</a><br>There are a few things to notice:<ul>
+<li>The protocol is set to TCP, which means that the Service sends requests to Pods on this protocol. UDP is also supported</li>
+<li>The spec has defined port 80, so it will listen to traffic on port 80 and sends traffic to the Pods on the same port. We could also define <code>targetPort</code> if the port on the Pods are different from the incoming traffic port</li>
+<li>The label <code>app: backend</code> defines that it should route requests to our Deployment with the same label</li>
+</ul>
+</li>
+<li>Create the Services:<pre><code>kubectl apply -f ./yaml/backend-service.yaml
+kubectl apply -f ./yaml/frontend-service.yaml
+</code></pre>
+</li>
+<li>List the created services:<pre><code>kubectl get service
+</code></pre>
+</li>
+</ul>
+<p>As you can see, both services have defined internal IPs, <code>CLUSTER-IP</code>. These internal IPs are only available inside the cluster. But we want our frontend application to be available from the internet. In order to do so, we must expose an external IP.</p>
+<h2>Exposing your app</h2>
+<p>Ok, so now what? With the previous command, we saw that we had two services, one for our frontend and one for our backend. But they both had internal IPs, no external. We want to be able to browse our application from our browser.<br>Let&#39;s look at another way. The Service resource can have a different type, it can be set as a LoadBalancer.</p>
+<ul>
+<li>Open the frontend service file again</li>
+<li>Set <code>type</code> to be <code>LoadBalancer</code></li>
+<li>Save and run<pre><code>kubectl apply -f ./yaml/frontend-service.yaml
+</code></pre>
+</li>
+<li>Wait for an external IP:<pre><code>watch kubectl get service frontend
+</code></pre>
+</li>
+</ul>
+<p>or</p>
+<pre><code>  kubectl get service frontend -w
+</code></pre>
+<ul>
+<li>Visit the IP in your browser to see your amazing CV online. But something is off!<br>There is no data, and if you inspect the network traffic in the browser console log, you can see that the requests to the api is responding with an error code.This is because the frontend application is expecting the IP of the backend Service to be set at the point of deployment.<br>But we deployed the frontend application before creating the Service objects,<br>meaning there was not any IP to give the frontend container on creation time.</li>
+<li>To fix this, we can delete the ReplicaSet for the frontend application:<pre><code>kubectl delete replicaset -l app=frontend
+</code></pre>
+By doing this, the Deployment will create a new ReplicaSet which will again create new Pods.<br>At this time the backend Service exists and is given to the frontend application.</li>
+</ul>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Rolling updates" duration="0">
+        <p>As you read earlier, Kubernetes can update your application without down time with a rolling-update strategy.<br>You will now update the background color of the frontend application, see that the build trigger creates a new image and<br>update the deployment to use this in your web application.</p>
+<ol type="1">
+<li>Open the file <a href="https://github.com/pingrid/nrk-kubernetes-intro/blob/master/frontend/src/index.css" target="_blank">frontend/src/index.css</a> and edit the field <code>background-color</code> to your favourite color (or the color you hate the most?)</li>
+<li>Commit your changes</li>
+<li>Push your changes and verify that a new verion is built on Azure pipelines as earlier.</li>
+<li>Update the image specification on the file <a href="https://github.com/pingrid/nrk-kubernetes-intro/blob/master/yaml/frontend-deployment.yaml" target="_blank">yaml/frontend-deployment.yaml</a> by changing the tag to the correct version number</li>
+<li>Open a new terminal window to watch the deletion and creation of Pods:<pre><code>  watch kubectl get pods
+</code></pre>
+Don&#39;t close this window.</li>
+<li>In the other terminal window, apply the updated Deployment specification<pre><code>  kubectl apply -f ./yaml/frontend-deployment.yaml
+</code></pre>
+</li>
+</ol>
+<p>Watch how the Pods are terminated and created in the other terminal window.<br>Notice that there are always at least one Pod running and that the last of the old Pods are first terminated when on of the new ones has the status running.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Inspection and logging" duration="0">
+        <p>Ok, everything looks good!<br>But what if you need to inspect the logs and states of your applications?<br>Kubernetes have a built in log feature.</p>
+<p>Let&#39;s take a look at our backend application, and see what information we can retrieve.</p>
+<ul>
+<li>View the logs of one container<ul>
+<li>First, list the pod names:<pre><code>kubectl get pods -l app=backend
+</code></pre>
+</li>
+</ul>
+The flag <code>l</code> is used to filter by pods with the label <code>app=backend</code>.<ul>
+<li>Now, you can view the logs from one pod:<pre><code>kubectl logs &lt;INSERT_THE_NAME_OF_A_POD&gt;
+</code></pre>
+</li>
+<li>You can also get all logs filtered by label.<pre><code>kubectl logs -l app=backend
+</code></pre>
+</li>
+</ul>
+</li>
+<li>Ok, the logs were fine! Let&#39;s look at the environment variables set by Kubernetes in our containers:<pre><code>kubectl exec -it &lt;INSERT_THE_NAME_OF_A_POD&gt; -- printenv
+</code></pre>
+</li>
+</ul>
+<p>Here you can see that we have IP addresses and ports to our frontend service.<br>  These IP addresses are internal, not reachable from outside the cluster.<br>  You can set your own environment variables in the deployment specification.<br>  They will show up in this list as well.</p>
+<ul>
+<li>We can also describe our deployment, to see its statuses and pod specification:<pre><code>kubectl describe deployment backend
+</code></pre>
+</li>
+</ul>
+<p>Notice that <code>StrategyType: RollingUpdate</code> that we saw when we applied an updated frontend is set by default.</p>
+<h2>DNS</h2>
+<p>A cool thing in Kubernetes is the Kubernetes DNS.<br>Inside the cluster, Pods and Services have their own DNS record.<br>For example, our backend service is reachable on <code>backend.&lt;NAMESPACE&gt;.svc.cluster.local</code>. If you are sending the request from the same namespace, you can also reach it on <code>backend</code>.<br>We will take a look at this.</p>
+<ul>
+<li>Get your current namespace<pre><code>kubectl config view | grep namespace: 
+</code></pre>
+</li>
+</ul>
+<p>If there is no output, your namespace is <code>default</code>.</p>
+<ul>
+<li>List pods to copy a pod name<pre><code>kubectl get pods -l app=frontend
+</code></pre>
+</li>
+<li>We will run <code>curl</code> from one of our frontend containers to see that we can reach our backend internally on <code>http://backend.&lt;NAMESPACE&gt;.svc.cluster.local:5000</code><pre><code>kubectl exec -it INSERT_FRONTEND_POD_NAME -- curl -v http://backend.&lt;NAMESPACE&gt;.svc.cluster.local:5000
+</code></pre>
+</li>
+</ul>
+<p>The HTTP status should be 200 along with the message &#34;Hello, I&#39;m alive&#34;</p>
+<ul>
+<li>Run <code>curl</code> from the same container to see that we can reach our backend internally on the shortname <code>http://backend:5000</code> as well<pre><code>kubectl exec -it INSERT_FRONTEND_POD_NAME -- curl -v http://backend:5000
+</code></pre>
+</li>
+</ul>
+<p>The output should be the same as above.</p>
+<ul>
+<li>To fix the issue where we had to delete the frontend ReplicaSet to get the internal IP for the backend Service could be avoided if we used the DNS instead.</li>
+</ul>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Extra tasks" duration="0">
+        <h2>Different methods to expose a service</h2>
+<p>Right now we have exposed our frontend service by setting the service type to <code>LoadBalancer</code>.</p>
+<h3>Create an ingress</h3>
+<p>Another option would be to use an ingress.</p>
+<p>An ingress is a resource that will allow traffic from outside the cluster to your services. We will now create such a resource to get an external IP and to allow requests to our frontend service.</p>
+<ul>
+<li>Open the file <a href="https://github.com/pingrid/nrk-kubernetes-intro/blob/master/yaml/ingress.yaml" target="_blank">yaml/ingress.yaml</a><br>Notice that we have defined that we have configured our ingress to send requests to our <code>frontend</code> service on port <code>8001</code>.</li>
+<li>Create the ingress resource:<pre><code>kubectl apply -f ./yaml/ingress.yaml
+</code></pre>
+</li>
+<li>Wait for an external IP to be configured<pre><code>watch kubectl get ingress cv-ingress
+</code></pre>
+</li>
+</ul>
+<p>or</p>
+<pre><code>  kubectl get ingress cv-ingress -w
+</code></pre>
+<p>It may take a few minutes for Kubernetes Engine to allocate an external IP address and set up forwarding rules until the load balancer is ready to serve your application. In the meanwhile, you may get errors such as HTTP 404 or HTTP 500 until the load balancer configuration is propagated across the globe.</p>
+<ul>
+<li>Visit the external IP in your preferred browser to make sure that your awesome CV is available online. If you get an error, the ingress and load balancing setup might not be completed.</li>
+</ul>
+<h3>Notes on exposing your application</h3>
+<p>The LoadBalancer type is dependent on your cloud provider. Google Cloud Platform supports these features, but other providers might not.</p>
+<h3>Service type NodePort</h3>
+<p>Another way to expose our app is with the service type <code>NodePort</code>. If we look at our frontend service, we can see that it already is defined as this type. So we are good to go then? No, not yet.</p>
+<ul>
+<li>We will change our frontend service to be a type NodePort instead. Open the file <a href="https://github.com/linemos/kubernetes-intro/blob/master/yaml/frontend-service.yaml" target="_blank">yaml/frontend-service.yaml</a></li>
+<li>Set the <code>type</code> to be <code>NodePort</code> and save</li>
+<li>Apply the changes<pre><code>kubectl apply -f ./yaml/frontend-service.yaml
+</code></pre>
+</li>
+<li>Run<pre><code>kubectl get service frontend
+</code></pre>
+</li>
+</ul>
+<p>We see that our service doesn&#39;t have an external IP. But what it do have is two ports, port 80 and a port in the range 30000-32767. The last port was set by the Kubernetes master when we created our service. This port we will use togheter with an external IP.</p>
+<ul>
+<li>The nodes in our cluster all have external IPs per default. Lets use one of those.<pre><code>kubectl get nodes -o wide
+</code></pre>
+</li>
+<li>Copy one of the external IPs from the output above along with the node port from our service:<pre><code>curl -v &lt;EXTERNAL_IP&gt;:&lt;NODE_PORT&gt;
+</code></pre>
+</li>
+</ul>
+<p>This will output <code>Connection failed</code>. This is because we haven&#39;t opened up requests on this port. Lets create a firewall rule that allows traffic on this port:</p>
+<ul>
+<li>Create a firewall rule. Switch <code>NODE_PORT</code> with the node port of your service:<pre><code>gcloud compute firewall-rules create cv-frontend --allow tcp:NODE_PORT
+</code></pre>
+</li>
+<li>Try the curl command from <code>6</code> again.<br><br>The output should also here be &#34;Hello, I&#39;m alive&#34;</li>
+<li>Do the same, but replace the IP with the external IP from one of the other nodes. It should have the same result</li>
+</ul>
+<p>How does this work? The nodes all have external IPs, so we can curl them. By default, neither services or pods in the cluster are exposed to the internet, but Kubernetes will open the port of <code>NodePort</code> services on all the nodes so that those services are available on :.</p>
+<h3>Notes on exposing your application</h3>
+<p>The Ingress resource is dependent on your cloud provider. Google Cloud Platform supports these features, but other providers might not.</p>
+<h2>Health checks</h2>
+<p>Kubernetes is using health checks and readiness checks to figure out the state of the pods.<br>If the health check responds with an error status code, Kubernetes will asume the container is unhealthy and kill the pod. Simliary, if the readiness check is unsuccessful, Kubernetes will asume it is not ready, and wait for it.<br>You can define your own.</p>
+<h2>Endpoint</h2>
+<p>The first way to define a health check is to define which endpoint the check should use. Our backend application contains the endpoint <code>/healthz</code>. Go ahead and define this as the health-endpoint in the backend deployment file, under backend container in the list <code>spec.containers</code>:</p>
+<pre><code>livenessProbe:
+  httpGet:
+    path: /healthz
+    port: 8001
+    httpHeaders:
+    - name: X-Custom-Header
+      value: Awesome
+  initialDelaySeconds: 3
+  periodSeconds: 3
+</code></pre>
+<p>When applying the new deployment file, run <code>kubectl get pods</code> to see that that the deployment has created a new Pod. Describe it to see the new specification.</p>
+<h2>Command</h2>
+<p>We can also specify a command to execute in the container. Lets do this for the frontend application:</p>
+<pre><code>livenessProbe:
+  exec:
+    command:
+    - ls
+    - /
+  initialDelaySeconds: 5
+  periodSeconds: 5  
+</code></pre>
+<p>The command can be any command available in the container. The commands available in your container depends on the base image and how you build your image.<br>E.g. if your container has <code>curl</code> installed, we could define that the probe is to curl the <code>/healtz</code> endpoint from the container. This wouldn&#39;t make much sence, though...</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Clean up" duration="0">
+        <p>You can always look at the pricing for resources <a href="https://azure.microsoft.com/nb-no/pricing/calculator/" target="_blank">here</a> and your remaining credits by searching for <em>Free trial</em> in the portal.</p>
+<p><strong>Delete your cluster</strong></p>
+<p>Be careful and only delete the cluster we have made during the workshop 😉</p>
+<pre><code>az aks delete --name [CLUSTER NAME] --resource-group [RESOURCE GROUP NAME]
+</code></pre>
+<p><strong>Close your billing account</strong></p>
+<p>Follow the steps <a href="https://docs.microsoft.com/en-us/azure/cost-management-billing/manage/cancel-azure-subscription" target="_blank">here</a> to close your Azure Subscription.</p>
+<p>And your are done and your credit card will not be charged.</p>
+<p>And that&#39;s it! ⎈</p>
+<h2>Any questions?</h2>
+<p>Contact us on <a href="https://twitter.com/linemoseng" target="_blank">@linemoseng</a> or <a href="https://twitter.com/ingridguren" target="_blank">@ingridguren</a>.</p>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    ga('create', 'UA-49880327-14', 'auto');
+
+    (function() {
+      var gaCodelab = '';
+      if (gaCodelab) {
+        ga('create', gaCodelab, 'auto', {name: 'codelab'});
+      }
+
+      var gaView;
+      var parts = location.search.substring(1).split('&');
+      for (var i = 0; i < parts.length; i++) {
+        var param = parts[i].split('=');
+        if (param[0] === 'viewga') {
+          gaView = param[1];
+          break;
+        }
+      }
+      if (gaView && gaView !== gaCodelab) {
+        ga('create', gaView, 'auto', {name: 'view'});
+      }
+    })();
+  </script>
+
+</body>
+</html>

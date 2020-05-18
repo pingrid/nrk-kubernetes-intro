@@ -55,7 +55,10 @@ function writeFile(outfile,out) {
 
 function process(s,outfile,out,state,callback) {
     var startLevel = 0;
-    var lines = s.split('\r').join('').split('\n');
+    if (!s) {
+        return;
+    }
+    var lines =  s.split('\r').join('').split('\n');
     if (refpos > state.outpos) {
        refpos += lines.length;
     }
