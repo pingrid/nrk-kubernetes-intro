@@ -1,0 +1,17 @@
+{
+  "name": "cv-backend",
+  "version": "1.0.0",
+  "description": "Backend for the CV app",
+  "main": "server.js",
+  "dependencies": {
+    "express": "^4.17.1",
+    "winston": "^3.2.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "start": "node server.js"
+  },
+  "proxy": "localhost:5000",
+  "author": "",
+  "license": "ISC"
+}
