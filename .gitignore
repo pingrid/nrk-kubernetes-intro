@@ -22,3 +22,4 @@ frontend/.env.production.local
 /*/yarn-error.log*
 
 .idea/
+/diverse/**
