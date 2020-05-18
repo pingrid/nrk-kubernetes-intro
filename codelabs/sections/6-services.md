@@ -1,7 +1,7 @@
 ## Create services
 Now that our applications are running, we would like to route traffic to them.
 
-* Open [yaml/backend-service.yaml](https://github.com/linemos/kubernetes-intro/blob/master/yaml/backend-service.yaml)
+* Open [yaml/backend-service.yaml](https://github.com/pingrid/nrk-kubernetes-intro/blob/master/yaml/backend-service.yaml)
   There are a few things to notice:
     - The protocol is set to TCP, which means that the Service sends requests to Pods on this protocol. UDP is also supported
     - The spec has defined port 80, so it will listen to traffic on port 80 and sends traffic to the Pods on the same port. We could also define `targetPort` if the port on the Pods are different from the incoming traffic port
@@ -61,4 +61,3 @@ Let's look at another way. The Service resource can have a different type, it ca
     By doing this, the Deployment will create a new ReplicaSet which will again create new Pods.
     At this time the backend Service exists and is given to the frontend application.
 
- 

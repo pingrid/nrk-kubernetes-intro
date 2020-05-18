@@ -4,13 +4,15 @@ It's time to deploy the frontend and backend to your cluster!
 
 The preferred way to configure Kubernetes resources is to specify them in YAML files.
 
-In the folder [yaml/](https://github.com/linemos/kubernetes-intro/tree/master/yaml) you find the YAML files specifying what resources Kubernetes should create.
+In the folder [yaml/](https://github.com/pingrid/nrk-kubernetes-intro/blob/master/yaml) you find the YAML files specifying what resources Kubernetes should create.
 There are two files for specifying services and two files for specifying deployments. One for the backend application (*backend-service.yaml*) and one for the frontend application (*frontend-service.yaml*).
 Same for the deployments.
 
-1. Open the file [yaml/backend-deployment.yaml](https://github.com/linemos/kubernetes-intro/blob/master/yaml/backend-deployment.yaml)
+1. Open the file [yaml/backend-deployment.yaml](https://github.com/pingrid/nrk-kubernetes-intro/blob/master/yaml/backend-deployment.yaml)
 2. In the field `spec.template.spec.containers.image` insert the full name of your backend Docker image created in the previous step. 
-The name should be on the form `gcr.io/MY_PROJECT_ID/backend:TAG_NAME`, example: `gcr.io/my-kubernetes-project-1234/backend:cv-backend-1`.
+
+The name should be on the form `[CONTAINER REGISTRY ID]/azurecr.io/[IMAGE NAME]:VERSION`. 
+You can find the correct path of your image by going to [Azure Portal](https://portal.azure.com/) and searching for Container registry. Select your registry, then select *Repositories*. Latest version can be found under repository under Container registry. 
  
     There are a few things to notice in the deployment file:
     - The number of replicas is set to 3. This is the number of pods we want running at all times
@@ -21,7 +23,32 @@ The name should be on the form `gcr.io/MY_PROJECT_ID/backend:TAG_NAME`, example:
       - `spec.template.metadata` is the label added to the Pods
   
 3. Open the file [yaml/frontend-deployment.yaml](https://github.com/linemos/kubernetes-intro/blob/master/yaml/frontend-deployment.yaml). 
-4. Insert your Frontend Docker image name in the field `spec.template.spec.containers.image`.  The name should should be on the form `gcr.io/MY_PROJECT_ID/frontend:TAG_NAME`.
+4. Insert your Frontend Docker image name in the field `spec.template.spec.containers.image`.  
+
+5. Now we need to give Kubernetes access to our container registry. 
+
+
+```
+kubectl create secret docker-registry <secret-name> \
+  --namespace <namespace> \
+  --docker-server=https://<container-registry-name>.azurecr.io \
+  --docker-username=<service-principal-ID> \
+  --docker-password=<service-principal-password>
+  ```
+  
+Let secret-name be `acr-docker-secret` and use the principal service-principal-id and service-principal-password be the ones you got by running the scripts above.
+
+Verify that you now have a secret: 
+```
+kubectl get secret. 
+``` 
+
+A secret is only available for resources within the cluster and is a great way to store passwords and tokens. 
+
+
+
+
+*It did not work?*  Alternative ways for accessing your build images [here](https://docs.microsoft.com/en-us/azure/container-registry/container-registry-auth-kubernetes).
 
 5. Create the resources for the backend and frontend (from root folder in the project):
   

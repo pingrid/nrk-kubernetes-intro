@@ -20,3 +20,5 @@ spec:
         imagePullPolicy: Always
         ports:
         - containerPort: 8001
+      imagePullSecrets:
+      - name: acr-docker-secret

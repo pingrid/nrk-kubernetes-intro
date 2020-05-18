@@ -19,3 +19,5 @@ spec:
         image: INSERT_PATH_TO_DOCKER_IMAGE
         ports:
         - containerPort: 5000
+      imagePullSecrets:
+        - name: acr-docker-secret
