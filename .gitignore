@@ -22,5 +22,8 @@ frontend/.env.production.local
 /*/yarn-error.log*
 
 .idea/
-/*/diverse/**
-/*/dist/**
+/diverse/**
+*/dist/**
+
+azure-pipelines*
+/yaml/

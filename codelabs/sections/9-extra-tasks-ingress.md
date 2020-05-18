@@ -8,7 +8,7 @@ Another option would be to use an ingress.
 
 An ingress is a resource that will allow traffic from outside the cluster to your services. We will now create such a resource to get an external IP and to allow requests to our frontend service.
 
-* Open the file [yaml/ingress.yaml](https://github.com/linemos/kubernetes-intro/blob/master/yaml/ingress.yaml)
+* Open the file [yaml/ingress.yaml](https://github.com/pingrid/nrk-kubernetes-intro/blob/master/yaml/ingress.yaml)
   Notice that we have defined that we have configured our ingress to send requests to our `frontend` service on port `8001`.
 * Create the ingress resource:
   

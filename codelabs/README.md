@@ -1,6 +1,6 @@
 # Codelabs for Kubernetes workshop documentation
 
-Built documentation is found [here](https://linemos.github.io/kubernetes-intro/).
+Built documentation is found [here](https://pingrid.github.io/nrk-kubernetes-intro/).
 
 ##Create documentation 
 
