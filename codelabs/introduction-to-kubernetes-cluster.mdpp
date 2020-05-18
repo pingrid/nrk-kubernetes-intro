@@ -1,0 +1,18 @@
+author: Line Moseng and Ingrid Guren
+id: lidev-introduction-to-kubernetes-cluster
+
+# Kubernetes on Azure 
+
+!INCLUDE "sections/0-gcp-setup.md"
+!INCLUDE "sections/1-installation.md"
+!INCLUDE "sections/2-fork.md"
+!INCLUDE "sections/3-docker.md"
+!INCLUDE "sections/4-change-code.md"
+!INCLUDE "sections/5-deploy.md"
+!INCLUDE "sections/6-services.md"
+!INCLUDE "sections/7-rolling-updates.md"
+!INCLUDE "sections/8-logs-dns.md"
+!INCLUDE "sections/9-extra-tasks-ingress.md"
+!INCLUDE "sections/9-extra-tasks-nodeport.md"
+!INCLUDE "sections/9-extra-tasks-healthcheck.md"
+!INCLUDE "sections/10-delete-tasks.md"
