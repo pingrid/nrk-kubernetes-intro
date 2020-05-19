@@ -1,7 +1,7 @@
-# Introduction to Kubernetes in Google Cloud Platform 
+# Introduction to Kubernetes on Microsoft Azure
 
-This is an introduction to Kubernetes on Google Cloud Platform.
-During this workshop you will learn how to deploy a frontend application and a backend application on a Kubernetes cluster on Google Cloud.
+This is an introduction to Kubernetes on Microsoft Azure.
+During this workshop you will learn how to deploy a frontend application and a backend application on a Kubernetes cluster in Azure.
 
 
 ## Content of the repository
@@ -15,3 +15,6 @@ During this workshop you will learn how to deploy a frontend application and a b
 🤓 - Line Moseng: linemos@gmail.com (💻 - linemos)
 
 🤓 - Ingrid Guren: ingridguren@gmail.com (💻 - ingridguren)
+
+
+Based on the Google Cloud workshop [here](https://github.com/linemos/kubernetes-intro).
