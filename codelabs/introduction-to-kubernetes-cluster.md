@@ -690,7 +690,7 @@ You can always look at the pricing for resources [here](https://azure.microsoft.
 
 **Delete your cluster** 
 
-Be careful and only delete the cluster we have made during the workshop 😉 
+Be careful and only delete the cluster we have made during the workshop 😉 This may take some time
 
 ```
 az aks delete --name [CLUSTER NAME] --resource-group [RESOURCE GROUP NAME]
@@ -700,10 +700,12 @@ az aks delete --name [CLUSTER NAME] --resource-group [RESOURCE GROUP NAME]
 
 Follow the steps [here](https://docs.microsoft.com/en-us/azure/cost-management-billing/manage/cancel-azure-subscription) to close your Azure Subscription. 
 
+Verify that everything is closed on [https://dev.azure.com/](https://dev.azure.com/) alo. 
 
-And your are done and your credit card will not be charged.
 
-And that's it! ⎈
+**And that's it! ⎈**
+
+And you are done and your credit card will not be charged.
 
 
 <a name="anyquestions?"></a>
