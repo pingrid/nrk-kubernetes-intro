@@ -7,7 +7,7 @@ WORKDIR /app
 
 # Install app dependencies
 COPY ./package.json /app
-COPY ./webpack.config.js /app
+COPY ./server.js /app
 RUN npm install
 
 # Bundle app source

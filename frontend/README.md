@@ -4,9 +4,7 @@ This is the frontend of our CV application.
 
 **About the frontend**
  
-In addition of [react](https://facebook.github.io/react/) we are using a [node](https://nodejs.org/en/) server with [webpack](https://webpack.js.org/).
- 
-The application is served through an express server in the cloud. 
+In addition of [react](https://facebook.github.io/react/). For development and building steps we are using [Create React App](https://github.com/facebook/create-react-app). For production we use a [node](https://nodejs.org/en/) server with http-proxy to connect with our backend. The application is served through an express server in the cloud. 
 
 ## Run the application 
 
@@ -32,9 +30,9 @@ npm i
 Run the application: 
 
 ```
-npm start
+npm run dev
 ```
-Open your browser and enter the url `localhost:3000`.
+Open your browser and enter the url `localhost:8081`.
 
 ## Allow data from api
 
