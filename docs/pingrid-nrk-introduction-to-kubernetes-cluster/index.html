@@ -66,6 +66,9 @@
 <pre><code>az aks get-credentials --resource-group [INSERT RESOURCE GROUP FROM SETUP] --name [INSERT CLUSTER NAME FROM SETUP]
 </code></pre>
 <p>What this does is to write credentials to the file <code>~/.kube/config</code>. You can take a look at that file too see what is written to it.</p>
+<p>If you have multiple subscriptions, you will have to set default subscription to view your clusters:</p>
+<pre><code>az account set --subscription [SUBSCTIPTION NAME]
+</code></pre>
 <ol type="1">
 <li>You can see the status of your cluster nodes here<pre><code>kubectl get nodes
 </code></pre>
@@ -181,14 +184,18 @@ If the status of your nodes are <code>Ready</code>, you are ready for next step!
 <ol type="1">
 <li>Open the file <a href="https://github.com/pingrid/nrk-kubernetes-intro/blob/master/yaml/frontend-deployment.yaml" target="_blank">yaml/frontend-deployment.yaml</a>.</li>
 <li>Insert your Frontend Docker image name in the field <code>spec.template.spec.containers.image</code>.</li>
-<li>Now we need to give Kubernetes access to our container registry.<pre><code>kubectl create secret docker-registry &lt;secret-name&gt; \
---namespace &lt;namespace&gt; \
---docker-server=https://&lt;container-registry-name&gt;.azurecr.io \
---docker-username=&lt;service-principal-ID&gt; \
---docker-password=&lt;service-principal-password&gt;
-</code></pre>
-</li>
+<li>Now we need to give Kubernetes access to our container registry.</li>
 </ol>
+<p>Run the script located in yaml/create-service-principal.sh:</p>
+<pre><code>sh  yaml/create-service-principal.sh
+</code></pre>
+<p>Store the variables printed from the script and generate a secret for accessing your Azure Container Registry:</p>
+<pre><code>kubectl create secret docker-registry &lt;secret-name&gt; \
+  --namespace &lt;namespace&gt; \
+  --docker-server=https://&lt;container-registry-name&gt;.azurecr.io \
+  --docker-username=&lt;service-principal-ID&gt; \
+  --docker-password=&lt;service-principal-password&gt;
+</code></pre>
 <p>Let secret-name be <code>acr-docker-secret</code> and use the principal service-principal-id and service-principal-password be the ones you got by running the scripts above.</p>
 <p>Verify that you now have a secret:</p>
 <pre><code>kubectl get secret. 
