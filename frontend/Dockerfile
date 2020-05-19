@@ -12,6 +12,8 @@ RUN npm install
 
 # Bundle app source
 COPY src/. /app/src
+COPY public/. /app/public
+
 
 # Build and optimize frontend application
 RUN npm run build
