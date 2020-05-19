@@ -7,7 +7,7 @@ WORKDIR /app
 
 # Install app dependencies
 COPY ./package.json /app
-COPY ./server.js /app
+COPY server.js /app
 RUN npm install
 
 # Bundle app source
@@ -17,5 +17,7 @@ COPY public/. /app/public
 
 # Build and optimize frontend application
 RUN npm run build
+
+EXPOSE 8081
 
 CMD [ "npm", "run", "start" ]
