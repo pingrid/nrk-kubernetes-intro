@@ -35,7 +35,7 @@ We want to automatically build our code ready for deploy with Azure pipelines.
 6. Select Basic for SKU
 7. Click *Create*
 
-**Configure your pipeline for the fronted-application **
+**Configure your pipeline for the fronted-application**
 1. Select *Docker: build an push an image to Azure Container Registry*
 2. Select your correct subscription
 3. Give it a recognizable name, ex. *cvfrontend* (remember we are going to create two 😊)

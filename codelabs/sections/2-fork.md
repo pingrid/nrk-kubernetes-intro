@@ -2,7 +2,7 @@
 
 1. Visit [this](https://github.com/pingrid/nrk-kubernetes-intro) repository and fork it to your own Github account. 
 
-2. Clone it to your laptop.
+2. Clone it to your laptop with `git clone [REPO NAME]`. 
 
-You need your own fork of the repository to create build triggers that will listen to changes in your code.
+It is possible to complete the workshop without cloning the repo to your laptop by doing the changes directly in Github and apply the files in the terminal. 
 

@@ -14,14 +14,6 @@ Create an account on Microsoft Azure
   3. Sign up. You will have to create a Microsoft account on an email you haven't used before. The first 12 months are free of charge if you don't use more than 1,650 credits. 
   Microsoft promise: *You won’t be charged unless you upgrade.*
 
-<!---
-
-<a name="installkubernetescli"></a>
-
-###Install Kubernetes CLI
-
-Install kubectl (Kubernetes CLI) from [here](https://kubernetes.io/docs/tasks/tools/install-kubectl/).
- --> 
     
 <a name="createaclusterintheportal"></a>
 
@@ -34,8 +26,8 @@ We will use the Portal.
   1. Visit [Azure Portal](https://portal.azure.com/) in your browser.
      Search for  *Kubernetes Service* in the top search bar
   2. Click + Add
-  3. Select *Free trial* as your subscription and add *nrk-introduction-kubernetes-rg* as a new Resource group.
-  4. Give the cluster the name `cv-cluster`.
+  3. Select *Free trial* as your subscription and add a new Resource group (ex. *intro-kubernetes-rg*). 
+  4. Give the cluster the name `cv-cluster`. Remember the name of your resource group and cluster name for later. 
   5. Select Kubernetes version *1.17.3* (not very important, but that is the version we use at NRK). 
   
   6. It is possible to change machine types, networking and resources for each node in your cluster.  We won't need much resources for our application: 
@@ -124,9 +116,9 @@ Now that we are authenticated, we can look at the components in our cluster by u
 
 1. Visit [this](https://github.com/pingrid/nrk-kubernetes-intro) repository and fork it to your own Github account. 
 
-2. Clone it to your laptop.
+2. Clone it to your laptop with `git clone [REPO NAME]`. 
 
-You need your own fork of the repository to create build triggers that will listen to changes in your code.
+It is possible to complete the workshop without cloning the repo to your laptop by doing the changes directly in Github and apply the files in the terminal. 
 
 
 
@@ -173,7 +165,7 @@ We want to automatically build our code ready for deploy with Azure pipelines.
 6. Select Basic for SKU
 7. Click *Create*
 
-**Configure your pipeline for the fronted-application **
+**Configure your pipeline for the fronted-application**
 1. Select *Docker: build an push an image to Azure Container Registry*
 2. Select your correct subscription
 3. Give it a recognizable name, ex. *cvfrontend* (remember we are going to create two 😊)

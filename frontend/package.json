@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "express": "^4.17.1",
+
     "http-proxy": "^1.18.1",
     "path": "^0.12.7",
     "prop-types": "^15.7.2",
@@ -15,7 +16,6 @@
     "whatwg-fetch": "^3.0.0"
   },
   "devDependencies": {
-    "custom-react-scripts": "^0.2.2",
     "react-scripts": "^3.4.1",
     "redux-thunk": "^2.3.0"
   },
