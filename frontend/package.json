@@ -4,7 +4,6 @@
   "private": true,
   "dependencies": {
     "express": "^4.17.1",
-
     "http-proxy": "^1.18.1",
     "path": "^0.12.7",
     "prop-types": "^15.7.2",
