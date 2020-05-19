@@ -26,5 +26,7 @@ frontend/.env.production.local
 */dist/**
 
 azure-pipelines*
-/yaml/
+/yaml/frontend-*
+/yaml/backend-*
+/yaml/ingress.yaml
 /frontend/build/
