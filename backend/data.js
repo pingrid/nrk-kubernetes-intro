@@ -1,4 +1,4 @@
-const education = JSON.stringify([
+const education = [
     {
         yearFrom: 2005,
         yearTo: 2007,
@@ -11,9 +11,9 @@ const education = JSON.stringify([
         place: 'Barista academy',
         comment: 'Made coffee'
     }
-]);
+]
 
-const work = JSON.stringify([
+const work = [
     {
         yearFrom: 2010,
         yearTo: 2018,
@@ -26,11 +26,11 @@ const work = JSON.stringify([
         place: 'The coffee shop',
         comment: 'Making coffee'
     }
-]);
+]
 
-const me = JSON.stringify({
+const me = {
     name: 'Arthur Dent',
     location: 'Earth'
-});
+}
 
 module.exports = { me, work, education };

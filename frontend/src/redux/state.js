@@ -38,8 +38,7 @@ export const fetchContactInformation = (dispatch) =>
             if (response.status < 200 && response.status > 300) {
                 throw new Error('oh noses');
             }
-            console.log(JSON.parse('test: ', response.body));
-            return JSON.parse(response.body); // .json();
+            return response.json();
         })
         .then(json => dispatch({type: CONTACT_INFORMATION_SUCCESS, result: json}))
         .catch(error => console.log(error));
@@ -51,8 +50,7 @@ export function fetchWork(dispatch) {
             if (!response.ok) {
                 throw new Error(`oh noses ${response.status}`);
             }
-            console.log('response: ', response);
-            return response.json(); // ();
+            return response.json()
         })
         .then(json => dispatch({type: WORK_DATA_SUCCESS, result: json}))
         .catch(error => console.log(error));

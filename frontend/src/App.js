@@ -1,5 +1,4 @@
-import React, {useState} from 'react';
-import {hot} from 'react-hot-loader/root';
+import React from 'react';
 import ContactInformation from './components/ContactInformation.jsx';
 import Education from './components/Education.jsx';
 import Work from './components/Work.jsx';
@@ -22,4 +21,4 @@ function App() {
     );
 }
 
-export default hot(App);
+export default App;

@@ -9,10 +9,6 @@ const store = create();
 ReactDOM.render((
     <Provider store={store}>
         <App />
-    </Provider>), document.getElementById('app'));
+    </Provider>), document.getElementById('root'));
 
-
-if (module.hot) {
-    module.hot.accept();
-}
 

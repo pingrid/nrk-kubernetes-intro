@@ -5,10 +5,10 @@ During this workshop you will learn how to deploy a frontend application and a b
 
 
 ## Content of the repository
- - [Tasks and documentation](https://linemos.github.io/kubernetes-intro/)
- - [Code for frontend application](frontend/)
- - [Code for backend application](backend/)
- - [Kubernetes deployment files](yaml/)
+ - [Tasks and documentation](https://pingrid.github.io/nrk-kubernetes-intro/docs/pingrid-nrk-introduction-to-kubernetes-cluster/)
+ - [Code for frontend application](https://github.com/pingrid/nrk-kubernetes-intro/tree/master/frontend)
+ - [Code for backend application](https://github.com/pingrid/nrk-kubernetes-intro/tree/master/backend)
+ - [Kubernetes deployment files](https://github.com/pingrid/nrk-kubernetes-intro/tree/master/yaml)
 
 #### Any questions? Let us know 🎉
 

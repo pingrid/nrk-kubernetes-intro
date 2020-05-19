@@ -27,3 +27,4 @@ frontend/.env.production.local
 
 azure-pipelines*
 /yaml/
+/frontend/build/
