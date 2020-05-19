@@ -19,6 +19,6 @@ spec:
         image: INSERT_PATH_TO_DOCKER_IMAGE
         imagePullPolicy: Always
         ports:
-        - containerPort: 8001
+        - containerPort: 8081
       imagePullSecrets:
       - name: acr-docker-secret
