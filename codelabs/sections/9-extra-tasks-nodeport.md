@@ -1,7 +1,7 @@
 #### Service type NodePort
 Another way to expose our app is with the service type `NodePort`. If we look at our frontend service, we can see that it already is defined as this type. So we are good to go then? No, not yet.
 
-* We will change our frontend service to be a type NodePort instead. Open the file [yaml/frontend-service.yaml](https://github.com/linemos/kubernetes-intro/blob/master/yaml/frontend-service.yaml)
+* We will change our frontend service to be a type NodePort instead. Open the file [yaml/frontend-service.yaml](https://github.com/pingrid/nrk-kubernetes-intro/blob/master/yaml/frontend-service.yaml)
 * Set the `type` to be `NodePort` and save
 * Apply the changes
 

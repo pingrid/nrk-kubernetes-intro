@@ -104,10 +104,10 @@ If the status of your nodes are <code>Ready</code>, you are ready for next step!
         <p>To create a deployment on Kubernetes, you need to specify at least one container for your application.<br>Kubernetes will on a deploy pull the image specified and create pods with this container.<br>Docker is the most commonly used container service in Kubernetes.</p>
 <p>In this repository you will find code for both applications in the backend and frontend directories.<br>Each of these folders also have their own Dockerfile.<br>Take a look at the docker files too see how they are built up:</p>
 <ul>
-<li><a href="/frontend/Dockerfile" target="_blank">frontend/Dockerfile</a></li>
-<li><a href="/backend/Dockerfile" target="_blank">backend/Dockerfile</a><br></li>
+<li><a href="https://github.com/pingrid/nrk-kubernetes-intro/blob/master/frontend/Dockerfile" target="_blank">frontend/Dockerfile</a></li>
+<li><a href="https://github.com/pingrid/nrk-kubernetes-intro/blob/master/backend/Dockerfile" target="_blank">backend/Dockerfile</a><br><br></li>
 </ul>
-<p>Notice the <code>.dockerignore</code> files inside both the <a href="https://github.com/linemos/kubernetes-intro/tree/master/frontend" target="_blank">frontend directory</a> and the <a href="https://github.com/linemos/kubernetes-intro/tree/master/backend" target="_blank">backend directory</a> as well.<br>This file tells the Docker daemon which files and directories to ignore, for example the <code>node_modules</code> directory.</p>
+<p>Notice the <code>.dockerignore</code> files inside both the <a href="https://github.com/pingrid/nrk-kubernetes-intro/tree/master/frontend" target="_blank">frontend directory</a> and the <a href="https://github.com/pingrid/nrk-kubernetes-intro/tree/master/backend" target="_blank">backend directory</a> as well.<br>This file tells the Docker daemon which files and directories to ignore, for example the <code>node_modules</code> directory.</p>
 <p>One way to create Docker images is to manually create ands build images on your own computer with the Docker daemon. Instead, we are going to automatically build images by using build triggers in Google Cloud Platform.</p>
 <h2>Container registry</h2>
 <p>Container registry is where we are going to push our docker images.<br>Go to <a href="https://portal.azure.com/#create/Microsoft.ContainerRegistry" target="_blank">Azure Container registry</a>(or search for Container Registry in Azure Portal).</p>
@@ -167,16 +167,19 @@ If the status of your nodes are <code>Ready</code>, you are ready for next step!
 <li>In the field <code>spec.template.spec.containers.image</code> insert the full name of your backend Docker image created in the previous step.</li>
 </ol>
 <p>The name should be on the form <code>[CONTAINER REGISTRY ID]/azurecr.io/[IMAGE NAME]:VERSION</code>.<br>You can find the correct path of your image by going to <a href="https://portal.azure.com/" target="_blank">Azure Portal</a> and searching for Container registry. Select your registry, then select <em>Repositories</em>. Latest version can be found under repository under Container registry.</p>
-<pre><code>There are a few things to notice in the deployment file:
-- The number of replicas is set to 3. This is the number of pods we want running at all times
-- The container spec has defined port 5000, so the Deployment will open this port on the containers
-- The label `app: backend` is defined three places:
-  - `metadata` is used by the service, which we will look at later
-  - `spec.selector.matchLabels` is how the Deployment knows which Pods to manage
-  - `spec.template.metadata` is the label added to the Pods
-</code></pre>
+<p>There are a few things to notice in the deployment file:</p>
+<ul>
+<li>The number of replicas is set to 3. This is the number of pods we want running at all times</li>
+<li>The container spec has defined port 5000, so the Deployment will open this port on the containers</li>
+<li>The label <code>app: backend</code> is defined three places:<br><br><ul>
+<li><code>metadata</code> is used by the service, which we will look at later</li>
+<li><code>spec.selector.matchLabels</code> is how the Deployment knows which Pods to manage</li>
+<li><code>spec.template.metadata</code> is the label added to the Pods<br><br></li>
+</ul>
+</li>
+</ul>
 <ol type="1">
-<li>Open the file <a href="https://github.com/linemos/kubernetes-intro/blob/master/yaml/frontend-deployment.yaml" target="_blank">yaml/frontend-deployment.yaml</a>.</li>
+<li>Open the file <a href="https://github.com/pingrid/nrk-kubernetes-intro/blob/master/yaml/frontend-deployment.yaml" target="_blank">yaml/frontend-deployment.yaml</a>.</li>
 <li>Insert your Frontend Docker image name in the field <code>spec.template.spec.containers.image</code>.</li>
 <li>Now we need to give Kubernetes access to our container registry.<pre><code>kubectl create secret docker-registry &lt;secret-name&gt; \
 --namespace &lt;namespace&gt; \
@@ -380,7 +383,7 @@ The flag <code>l</code> is used to filter by pods with the label <code>app=backe
 <h3>Service type NodePort</h3>
 <p>Another way to expose our app is with the service type <code>NodePort</code>. If we look at our frontend service, we can see that it already is defined as this type. So we are good to go then? No, not yet.</p>
 <ul>
-<li>We will change our frontend service to be a type NodePort instead. Open the file <a href="https://github.com/linemos/kubernetes-intro/blob/master/yaml/frontend-service.yaml" target="_blank">yaml/frontend-service.yaml</a></li>
+<li>We will change our frontend service to be a type NodePort instead. Open the file <a href="https://github.com/pingrid/nrk-kubernetes-intro/blob/master/yaml/frontend-service.yaml" target="_blank">yaml/frontend-service.yaml</a></li>
 <li>Set the <code>type</code> to be <code>NodePort</code> and save</li>
 <li>Apply the changes<pre><code>kubectl apply -f ./yaml/frontend-service.yaml
 </code></pre>

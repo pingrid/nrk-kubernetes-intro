@@ -14,15 +14,15 @@ Same for the deployments.
 The name should be on the form `[CONTAINER REGISTRY ID]/azurecr.io/[IMAGE NAME]:VERSION`. 
 You can find the correct path of your image by going to [Azure Portal](https://portal.azure.com/) and searching for Container registry. Select your registry, then select *Repositories*. Latest version can be found under repository under Container registry. 
  
-    There are a few things to notice in the deployment file:
-    - The number of replicas is set to 3. This is the number of pods we want running at all times
-    - The container spec has defined port 5000, so the Deployment will open this port on the containers
-    - The label `app: backend` is defined three places:
-      - `metadata` is used by the service, which we will look at later
-      - `spec.selector.matchLabels` is how the Deployment knows which Pods to manage
-      - `spec.template.metadata` is the label added to the Pods
+There are a few things to notice in the deployment file:
+- The number of replicas is set to 3. This is the number of pods we want running at all times
+- The container spec has defined port 5000, so the Deployment will open this port on the containers
+- The label `app: backend` is defined three places:
+  - `metadata` is used by the service, which we will look at later
+  - `spec.selector.matchLabels` is how the Deployment knows which Pods to manage
+  - `spec.template.metadata` is the label added to the Pods
   
-3. Open the file [yaml/frontend-deployment.yaml](https://github.com/linemos/kubernetes-intro/blob/master/yaml/frontend-deployment.yaml). 
+3. Open the file [yaml/frontend-deployment.yaml](https://github.com/pingrid/nrk-kubernetes-intro/blob/master/yaml/frontend-deployment.yaml). 
 4. Insert your Frontend Docker image name in the field `spec.template.spec.containers.image`.  
 
 5. Now we need to give Kubernetes access to our container registry. 

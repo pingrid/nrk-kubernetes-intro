@@ -6,10 +6,11 @@ Docker is the most commonly used container service in Kubernetes.
 In this repository you will find code for both applications in the backend and frontend directories.
 Each of these folders also have their own Dockerfile.
 Take a look at the docker files too see how they are built up:
-  - [frontend/Dockerfile](/frontend/Dockerfile)
-  - [backend/Dockerfile](/backend/Dockerfile)
+  - [frontend/Dockerfile](https://github.com/pingrid/nrk-kubernetes-intro/blob/master/frontend/Dockerfile)
+  - [backend/Dockerfile](https://github.com/pingrid/nrk-kubernetes-intro/blob/master/backend/Dockerfile)
   
-Notice the `.dockerignore` files inside both the [frontend directory](https://github.com/linemos/kubernetes-intro/tree/master/frontend) and the [backend directory](https://github.com/linemos/kubernetes-intro/tree/master/backend) as well.
+  
+Notice the `.dockerignore` files inside both the [frontend directory](https://github.com/pingrid/nrk-kubernetes-intro/tree/master/frontend) and the [backend directory](https://github.com/pingrid/nrk-kubernetes-intro/tree/master/backend) as well.
 This file tells the Docker daemon which files and directories to ignore, for example the `node_modules` directory.
 
 One way to create Docker images is to manually create ands build images on your own computer with the Docker daemon. Instead, we are going to automatically build images by using build triggers in Google Cloud Platform.

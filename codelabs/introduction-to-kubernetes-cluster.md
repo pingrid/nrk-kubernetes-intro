@@ -140,10 +140,11 @@ Docker is the most commonly used container service in Kubernetes.
 In this repository you will find code for both applications in the backend and frontend directories.
 Each of these folders also have their own Dockerfile.
 Take a look at the docker files too see how they are built up:
-  - [frontend/Dockerfile](/frontend/Dockerfile)
-  - [backend/Dockerfile](/backend/Dockerfile)
+  - [frontend/Dockerfile](https://github.com/pingrid/nrk-kubernetes-intro/blob/master/frontend/Dockerfile)
+  - [backend/Dockerfile](https://github.com/pingrid/nrk-kubernetes-intro/blob/master/backend/Dockerfile)
   
-Notice the `.dockerignore` files inside both the [frontend directory](https://github.com/linemos/kubernetes-intro/tree/master/frontend) and the [backend directory](https://github.com/linemos/kubernetes-intro/tree/master/backend) as well.
+  
+Notice the `.dockerignore` files inside both the [frontend directory](https://github.com/pingrid/nrk-kubernetes-intro/tree/master/frontend) and the [backend directory](https://github.com/pingrid/nrk-kubernetes-intro/tree/master/backend) as well.
 This file tells the Docker daemon which files and directories to ignore, for example the `node_modules` directory.
 
 One way to create Docker images is to manually create ands build images on your own computer with the Docker daemon. Instead, we are going to automatically build images by using build triggers in Google Cloud Platform.
@@ -233,15 +234,15 @@ Same for the deployments.
 The name should be on the form `[CONTAINER REGISTRY ID]/azurecr.io/[IMAGE NAME]:VERSION`. 
 You can find the correct path of your image by going to [Azure Portal](https://portal.azure.com/) and searching for Container registry. Select your registry, then select *Repositories*. Latest version can be found under repository under Container registry. 
  
-    There are a few things to notice in the deployment file:
-    - The number of replicas is set to 3. This is the number of pods we want running at all times
-    - The container spec has defined port 5000, so the Deployment will open this port on the containers
-    - The label `app: backend` is defined three places:
-      - `metadata` is used by the service, which we will look at later
-      - `spec.selector.matchLabels` is how the Deployment knows which Pods to manage
-      - `spec.template.metadata` is the label added to the Pods
+There are a few things to notice in the deployment file:
+- The number of replicas is set to 3. This is the number of pods we want running at all times
+- The container spec has defined port 5000, so the Deployment will open this port on the containers
+- The label `app: backend` is defined three places:
+  - `metadata` is used by the service, which we will look at later
+  - `spec.selector.matchLabels` is how the Deployment knows which Pods to manage
+  - `spec.template.metadata` is the label added to the Pods
   
-3. Open the file [yaml/frontend-deployment.yaml](https://github.com/linemos/kubernetes-intro/blob/master/yaml/frontend-deployment.yaml). 
+3. Open the file [yaml/frontend-deployment.yaml](https://github.com/pingrid/nrk-kubernetes-intro/blob/master/yaml/frontend-deployment.yaml). 
 4. Insert your Frontend Docker image name in the field `spec.template.spec.containers.image`.  
 
 5. Now we need to give Kubernetes access to our container registry. 
@@ -575,7 +576,7 @@ The LoadBalancer type is dependent on your cloud provider. Google Cloud Platform
 ####Service type NodePort
 Another way to expose our app is with the service type `NodePort`. If we look at our frontend service, we can see that it already is defined as this type. So we are good to go then? No, not yet.
 
-* We will change our frontend service to be a type NodePort instead. Open the file [yaml/frontend-service.yaml](https://github.com/linemos/kubernetes-intro/blob/master/yaml/frontend-service.yaml)
+* We will change our frontend service to be a type NodePort instead. Open the file [yaml/frontend-service.yaml](https://github.com/pingrid/nrk-kubernetes-intro/blob/master/yaml/frontend-service.yaml)
 * Set the `type` to be `NodePort` and save
 * Apply the changes
 
