@@ -27,7 +27,8 @@ There are a few things to notice in the deployment file:
 
 5. Now we need to give Kubernetes access to our container registry. 
 
-Run the script located in yaml/create-service-principal.sh: 
+Add `ACR_NAME` (the name of your Azure Container Registry) and `SERVICE_PRINCIPAL_NAME` (Must be unique within your AD tenant) to the script located in *yaml/create-service-principal.sh*.
+Run the script:  
 
 ```
 sh  yaml/create-service-principal.sh

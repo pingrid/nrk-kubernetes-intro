@@ -186,7 +186,7 @@ If the status of your nodes are <code>Ready</code>, you are ready for next step!
 <li>Insert your Frontend Docker image name in the field <code>spec.template.spec.containers.image</code>.</li>
 <li>Now we need to give Kubernetes access to our container registry.</li>
 </ol>
-<p>Run the script located in yaml/create-service-principal.sh:</p>
+<p>Add <code>ACR_NAME</code> (the name of your Azure Container Registry) and <code>SERVICE_PRINCIPAL_NAME</code> (Must be unique within your AD tenant) to the script located in <em>yaml/create-service-principal.sh</em>.<br>Run the script:</p>
 <pre><code>sh  yaml/create-service-principal.sh
 </code></pre>
 <p>Store the variables printed from the script and generate a secret for accessing your Azure Container Registry:</p>
