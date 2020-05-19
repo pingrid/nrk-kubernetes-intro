@@ -28,6 +28,12 @@ az aks get-credentials --resource-group [INSERT RESOURCE GROUP FROM SETUP] --nam
 
 What this does is to write credentials to the file `~/.kube/config`. You can take a look at that file too see what is written to it.
 
+If you have multiple subscriptions, you will have to set default subscription to view your clusters: 
+
+```
+az account set --subscription [SUBSCTIPTION NAME]
+```
+
 2. You can see the status of your cluster nodes here
    
    ```

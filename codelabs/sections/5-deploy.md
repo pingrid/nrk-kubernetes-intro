@@ -27,6 +27,13 @@ There are a few things to notice in the deployment file:
 
 5. Now we need to give Kubernetes access to our container registry. 
 
+Run the script located in yaml/create-service-principal.sh: 
+
+```
+sh  yaml/create-service-principal.sh
+```
+
+Store the variables printed from the script and generate a secret for accessing your Azure Container Registry: 
 
 ```
 kubectl create secret docker-registry <secret-name> \
