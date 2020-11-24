@@ -5,7 +5,7 @@
   "main": "server.js",
   "dependencies": {
     "express": "^4.17.1",
-    "winston": "^3.2.1"
+    "winston": "^3.3.3"
   },
   "devDependencies": {},
   "scripts": {

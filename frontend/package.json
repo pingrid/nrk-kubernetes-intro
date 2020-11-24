@@ -3,29 +3,55 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@types/jest": "^26.0.15",
+    "@types/node": "^14.14.9",
+    "@types/react": "^17.0.0",
+    "@types/react-dom": "^17.0.0",
+    "@types/react-redux": "^7.1.11",
     "express": "^4.17.1",
     "http-proxy": "^1.18.1",
+    "http-proxy-middleware": "^1.0.6",
     "path": "^0.12.7",
     "prop-types": "^15.7.2",
-    "react": "^16.13.1",
-    "react-bootstrap": "^0.32.4",
-    "react-dom": "^16.13.1",
-    "react-redux": "^7.2.0",
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1",
+    "react-redux": "^7.2.2",
     "redux": "^4.0.5",
-    "whatwg-fetch": "^3.0.0"
+    "typesafe-actions": "^5.1.0",
+    "typescript": "^4.1.2",
+    "whatwg-fetch": "^3.5.0"
   },
   "devDependencies": {
-    "react-scripts": "^3.4.1",
+    "lint-staged": "^10.5.2",
+    "prettier": "^2.2.0",
+    "react-scripts": "^4.0.1",
     "redux-thunk": "^2.3.0"
   },
-  "proxy": {
-    "/api": {
-      "target": "http://localhost:5000"
-    }
+  "lint-staged": {
+    "*.css": [
+      "stylelint",
+      "prettier --check"
+    ],
+    "*.{js,ts,tsx}": [
+      "eslint --ext .js,.ts,.tsx --max-warnings=0",
+      "prettier --check"
+    ]
   },
   "scripts": {
     "build": "react-scripts build",
     "dev": "PORT=8081 react-scripts start",
     "start": "node server.js"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   }
 }
