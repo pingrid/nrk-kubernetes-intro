@@ -7,7 +7,7 @@ Welcome to our workshop about Kubernetes ! 👋😄
 In order to create your own cluster, you will have to register your credit card. You will not be charged anything for this workshop if you haven't already used Google Cloud Platform. 
 
 
-2. [**Set up your own cluster on Microsoft Azure**](https://pingrid.github.io/nrk-kubernetes-intro/docs/pingrid-nrk-introduction-to-kubernetes-cluster). 
+2. [**Set up your own cluster on Microsoft Azure**](https://pingrid.github.io/nrk-kubernetes-intro/pingrid-nrk-introduction-to-kubernetes-cluster). 
 In order to create your own cluster, you will have to register your credit card. You will not be charged anything for this workshop if you haven't already used Microsoft Azure. 
 
 
