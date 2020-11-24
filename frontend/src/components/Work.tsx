@@ -1,47 +1,44 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import PT from 'prop-types';
 import {fetchWork} from '../redux/state';
+import { IRootState } from '../redux/store';
+import { IWork } from '../redux/types';
 
 const Work = () => {
     const dispatch = useDispatch();
-    const work = useSelector((state) => state.work);
+    const workList = useSelector((state: IRootState) => state.work);
 
     useEffect(() => {
-        if (!work) {
-            fetchWork(dispatch);
+        if (!workList) {
+            dispatch(fetchWork());
         }
-
     }, []);
-    if (!work) {
+    if (!workList) {
         return <div />;
     }
-    const workRows = work ?
-        Object.values(work).map((elm, inc) => (
+    const workRows = workList ?
+        Object.values(workList).map((work: IWork, inc) => (
             <tr className="table-row justify-content-between" key={`work-row-${inc}`}>
-                <td>{elm.yearFrom} - {elm.yearTo}</td>
-                <td>{elm.place}</td>
-                <td>{elm.comment}</td>
+                <td>{work.yearFrom} - {work.yearTo}</td>
+                <td>{work.place}</td>
+                <td>{work.comment}</td>
             </tr>
         )) :
-        <norcript />;
+        <noscript />;
+
     return (
         <div className="work">
             <h2>Work</h2>
             <table>
                 <thead>
-                    <tr><th>Period</th><th>Where</th><th>Comment</th></tr>
+                <tr><th>Period</th><th>Where</th><th>Comment</th></tr>
                 </thead>
                 <tbody>
-                    {workRows}
+                {workRows}
                 </tbody>
             </table>
         </div>
     );
 };
 
-Work.propTypes = {
-    work: PT.arrayOf(PT.object)
-};
-
-export default Work;
+export { Work };

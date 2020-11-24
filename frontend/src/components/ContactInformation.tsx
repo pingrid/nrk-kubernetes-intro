@@ -1,17 +1,15 @@
 import React, { useEffect } from 'react';
-import PT from 'prop-types';
 import {useDispatch, useSelector} from 'react-redux';
 import {fetchContactInformation} from '../redux/state';
+import { IRootState } from '../redux/store';
 
 const ContactInformation = () => {
     const dispatch = useDispatch();
-    const contactInformation = useSelector((state) => state.contactInformation);
+    const contactInformation = useSelector((state: IRootState) => state.contactInformation);
 
     useEffect(() => {
-        if (!contactInformation) {
-            fetchContactInformation(dispatch);
-        }
-
+        console.log('getting contact');
+        dispatch(fetchContactInformation());
     }, []);
     if (!contactInformation) {
         return <noscript />;
@@ -35,8 +33,4 @@ const ContactInformation = () => {
     );
 };
 
-ContactInformation.propTypes = {
-    contactInformation: PT.object
-};
-
-export default ContactInformation;
+export { ContactInformation };

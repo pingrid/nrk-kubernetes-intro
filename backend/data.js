@@ -11,7 +11,7 @@ const education = [
         place: 'Barista academy',
         comment: 'Made coffee'
     }
-]
+];
 
 const work = [
     {
@@ -26,11 +26,11 @@ const work = [
         place: 'The coffee shop',
         comment: 'Making coffee'
     }
-]
+];
 
 const me = {
     name: 'Arthur Dent',
     location: 'Earth'
-}
+};
 
 module.exports = { me, work, education };

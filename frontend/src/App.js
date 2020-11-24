@@ -1,7 +1,7 @@
 import React from 'react';
-import ContactInformation from './components/ContactInformation.jsx';
-import Education from './components/Education.jsx';
-import Work from './components/Work.jsx';
+import { ContactInformation } from './components/ContactInformation';
+import { Education } from './components/Education';
+import { Work } from './components/Work';
 import './index.css';
 
 function App() {

@@ -1,0 +1,55 @@
+{
+  "compilerOptions": {
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "target": "esnext",
+    "module": "esnext",
+    "allowJs": true,
+    "checkJs": false,
+    "noEmit": true,
+    "noImplicitAny": true,
+    "jsx": "react-jsx",
+    "allowSyntheticDefaultImports": true,
+    "experimentalDecorators": true,
+    "esModuleInterop": true,
+    "typeRoots": [
+      "./node_modules/@types",
+      "./@types"
+    ],
+    "outDir": "./build",
+    "lib": [
+      "dom",
+      "es2018"
+    ],
+    "skipLibCheck": true,
+    "strictNullChecks": true,
+    "rootDir": ".",
+    "baseUrl": "./",
+    "sourceMap": true,
+    "plugins": [
+      {
+        "name": "typescript-plugin-css-modules",
+        "options": {
+          "classnameTransform": "asIs"
+        }
+      }
+    ],
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "noFallthroughCasesInSwitch": true,
+    "isolatedModules": true
+  },
+  "include": [
+    "babel.config.js",
+    ".postcss.config.js",
+    "webpack",
+    "package.json",
+    "src",
+    "scripts"
+  ],
+  "exclude": [
+    "node_modules",
+    "build",
+    "scripts"
+  ]
+}
