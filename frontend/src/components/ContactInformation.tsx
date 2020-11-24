@@ -8,7 +8,6 @@ const ContactInformation = () => {
     const contactInformation = useSelector((state: IRootState) => state.contactInformation);
 
     useEffect(() => {
-        console.log('getting contact');
         dispatch(fetchContactInformation());
     }, []);
     if (!contactInformation) {

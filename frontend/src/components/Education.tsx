@@ -9,11 +9,9 @@ const Education = () => {
     const educationList = useSelector((state: IRootState) => state.education);
 
     useEffect(() => {
-        console.log('getting education');
         dispatch(fetchEducation());
     }, []);
 
-    console.log('educationList. ', educationList);
     if (!educationList) {
         return <noscript />;
     }
