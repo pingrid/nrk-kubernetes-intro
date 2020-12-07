@@ -5,7 +5,7 @@ During this workshop you will learn how to deploy a frontend application and a b
 
 
 ## Content of the repository
- - [Tasks and documentation](https://pingrid.github.io/nrk-kubernetes-intro/docs/pingrid-nrk-introduction-to-kubernetes-cluster/)
+ - [Tasks and documentation](https://pingrid.github.io/nrk-kubernetes-intro/pingrid-nrk-introduction-to-kubernetes-cluster/)
  - [Code for frontend application](https://github.com/pingrid/nrk-kubernetes-intro/tree/master/frontend)
  - [Code for backend application](https://github.com/pingrid/nrk-kubernetes-intro/tree/master/backend)
  - [Kubernetes deployment files](https://github.com/pingrid/nrk-kubernetes-intro/tree/master/yaml)
